@@ -1,21 +1,17 @@
 import React, { useState, useEffect } from "react";
 import Container from "components/Container";
-import DetailSpot from "components/Detail";
+import DetailSpot from "components/Spot/detail";
+import NewSpot from "components/Spot/new";
 import { useSelector, useDispatch } from "react-redux";
 import { getAppState } from "redux/app/selectors";
-import { getSpots, addSpot } from "redux/app/actions";
-import { Table, Button, Modal, Form, Input, Upload } from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
-import type { UploadProps } from 'antd/es/upload';
-import type { UploadFile } from 'antd/es/upload/interface';
+import { getSpots } from "redux/app/actions";
+import { Table, Button } from 'antd';
 
 const Home = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [fileList, setFileList] = useState<UploadFile[]>([]);
+  const [showNew, setShowNew] = useState(false);
   const [showDetail, setShowDetail] = useState(false);
   const [spot, setSpot] = useState(null);
 
-  const { TextArea } = Input;
   const dispatch = useDispatch();
   const { spots } = useSelector(
     getAppState
@@ -31,57 +27,12 @@ const Home = () => {
   };
 
   const showModal = () => {
-    setIsModalOpen(true);
-  };
-
-  const handleOk = () => {
-    setIsModalOpen(false);
-  };
-
-  const handleCancel = () => {
-    setIsModalOpen(false);
-  };
-
-  const onFinish = async (values: any) => {
-    const formData: any = new FormData();
-
-    let fileObjList: any = [];
-
-    for (let i = 0; i < fileList.length; i++) {
-      fileObjList.push(fileList[i].originFileObj);
-    }
-
-    formData.append('title', values.title);
-    formData.append('description', values.description);
-    formData.append('price', values.price);
-    
-    for (let i = 0 ; i < fileObjList.length ; i++) {
-      formData.append("images[]", fileObjList[i]);
-    }
-
-    await dispatch(addSpot(formData));
-
-    window.location.href = "/";
-  };
-
-  const onFinishFailed = (errorInfo: any) => {
-    console.log('Failed:', errorInfo);
-  };
-
-  const handleChange: UploadProps['onChange'] = ({ fileList: newFileList }) => {
-    setFileList(newFileList);
+    setShowNew(true);
   };
 
   const hideDetailModal = () => {
     setShowDetail(false);
   };
-
-  const uploadButton = (
-    <div>
-      <PlusOutlined />
-      <div style={{ marginTop: 8 }}>Upload</div>
-    </div>
-  );
   
   const columns = [
     {
@@ -135,58 +86,9 @@ const Home = () => {
         <Button type="primary" onClick={showModal}>
           Create Spot
         </Button>
-        <Modal title="Create Spot" open={isModalOpen} onOk={handleOk} onCancel={handleCancel} footer={null}>
-          <Form
-            name="basic"
-            initialValues={{ remember: true }}
-            onFinish={onFinish}
-            onFinishFailed={onFinishFailed}
-            autoComplete="off"
-            layout="vertical"
-          >
-            <Form.Item
-              label="Title"
-              name="title"
-              rules={[{ required: true, message: "Please input title." }]}
-            >
-              <Input placeholder="Title" />
-            </Form.Item>
-            <Form.Item
-              label="Description"
-              name="description"
-              rules={[{ required: true, message: "Please input description." }]}
-            >
-              <TextArea rows={4} placeholder="Description" />
-            </Form.Item>
-            <Form.Item
-              label="Price"
-              name="price"
-              rules={[{ required: true, message: "Please input price." }]}
-            >
-              <Input placeholder="Price" />
-            </Form.Item>
-            <Form.Item
-              label="Images"
-              name="Images"
-            >
-              <Upload
-                listType="picture-card"
-                fileList={fileList}
-                onChange={handleChange}
-                multiple={true}
-              >
-                {fileList.length >= 8 ? null : uploadButton}
-              </Upload>
-            </Form.Item>
-            <Form.Item>
-              <Button type="primary" htmlType="submit" className="spot_submit">
-                Submit
-              </Button>
-            </Form.Item>
-          </Form>
-        </Modal>
       </div>
 
+      <NewSpot showModal={showNew} />
       <DetailSpot showModal={showDetail} hideModal={hideDetailModal} spot={spot} />
     </Container>
   );
