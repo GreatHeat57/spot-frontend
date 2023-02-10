@@ -26,12 +26,16 @@ const Home = () => {
     setSpot(record);
   };
 
-  const showModal = () => {
+  const showNewModal = () => {
     setShowNew(true);
   };
 
   const hideDetailModal = () => {
     setShowDetail(false);
+  };
+
+  const hideNewModal = () => {
+    setShowNew(false);
   };
   
   const columns = [
@@ -83,12 +87,12 @@ const Home = () => {
             };
           }}
         />
-        <Button type="primary" onClick={showModal}>
+        <Button type="primary" onClick={showNewModal}>
           Create Spot
         </Button>
       </div>
 
-      <NewSpot showModal={showNew} />
+      <NewSpot showModal={showNew} hideModal={hideNewModal} />
       <DetailSpot showModal={showDetail} hideModal={hideDetailModal} spot={spot} />
     </Container>
   );

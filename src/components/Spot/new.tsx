@@ -9,10 +9,11 @@ import type { UploadFile } from 'antd/es/upload/interface';
 
 interface NewSpotProps {
   showModal: boolean;
+  hideModal: () => void;
 }
 
 const DetailSpot: FC<NewSpotProps> = (props: NewSpotProps) => {
-  const { showModal } = props;
+  const { showModal, hideModal } = props;
   
   const [fileList, setFileList] = useState<UploadFile[]>([]);
 
@@ -57,7 +58,7 @@ const DetailSpot: FC<NewSpotProps> = (props: NewSpotProps) => {
   );
 
   return (
-    <Modal title="Create Spot" open={showModal} footer={null}>
+    <Modal title="Create Spot" open={showModal} onCancel={hideModal} footer={null}>
       <Form
         name="basic"
         initialValues={{ remember: true }}
